@@ -12,7 +12,7 @@
     String loginUser = (String) session.getAttribute("loginUser");
     String loginName = (String) session.getAttribute("loginName");
     String loginRole = (String) session.getAttribute("loginRole");
-    if (loginUser == null) { response.sendRedirect("/CampusNav/campuslogin.jsp"); return; }
+    if (loginUser == null) { response.sendRedirect("/CAN/campuslogin.jsp"); return; }
     boolean isAdmin = "admin".equals(loginRole);
 
     /* ── URL 파라미터
@@ -95,7 +95,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ICT CampusNav — <%= esc(paramBuilding) %> 실내 안내</title>
+<title>ICT CAN — <%= esc(paramBuilding) %> 실내 안내</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -237,9 +237,9 @@ body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15p
 
 <!-- TOPNAV -->
 <div class="topnav">
-  <a href="/CampusNav/campuslogin.jsp" class="logo">
-    <div class="logo-dot"><img src="/CampusNav/images/logo.png" alt="ICT"></div>
-    <span>ICT Campus<em>Nav</em></span>
+  <a href="/CAN/campuslogin.jsp" class="logo">
+    <div class="logo-dot"><img src="/CAN/images/logo.png" alt="ICT"></div>
+    <span>ICT <em>CAN</em></span>
   </a>
   <div class="nav-right">
     <span style="font-size:13px;color:var(--txt2);font-family:var(--mono);"><i class="bi bi-person-circle"></i> <%= esc(loginName) %></span>
@@ -247,7 +247,7 @@ body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15p
       <%= isAdmin?"관리자":"student".equals(loginRole)?"학부생":"assistant".equals(loginRole)?"조교":"professor".equals(loginRole)?"교수":"게스트" %>
     </span>
     <a href="javascript:history.back()" class="chip"><i class="bi bi-arrow-left"></i>뒤로</a>
-    <a href="/CampusNav/navigationTest1.jsp" class="chip"><i class="bi bi-map"></i>캠퍼스 지도</a>
+    <a href="/CAN/navigationTest1.jsp" class="chip"><i class="bi bi-map"></i>캠퍼스 지도</a>
   </div>
 </div>
 
@@ -302,7 +302,7 @@ body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15p
           <div class="divider"></div>
           <label class="f-label">도면 이미지 경로 <span style="font-weight:400;color:var(--txt3)">(선택)</span></label>
           <input type="text" class="f-input" id="floorImgInput"
-                 placeholder="예: /CampusNav/images/floors/eng1_2f.png"
+                 placeholder="예: /CAN/images/floors/eng1_2f.png"
                  value="<%= esc(floorplanImg) %>"
                  oninput="updateFloorplanImg(this.value)">
         </div>
@@ -641,7 +641,7 @@ async function saveFloorRoute() {
     const btn=document.getElementById('btnSave');
     btn.disabled=true;btn.innerHTML='<i class="bi bi-hourglass-split"></i>저장 중...';
     try {
-        const res=await fetch('/CampusNav/saveFloorRoute.jsp',{
+        const res=await fetch('/CAN/saveFloorRoute.jsp',{
             method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body:'building='+encodeURIComponent(BUILDING)+
                  '&destRoom='+encodeURIComponent(destRoom)+
@@ -677,7 +677,7 @@ function loadFloorRoute(id, pointsJson) {
 async function deleteFloorRoute(id) {
     if(!confirm('이 경로를 삭제하시겠습니까?'))return;
     try{
-        await fetch('/CampusNav/deleteFloorRoute.jsp?routeId='+id,{method:'POST'});
+        await fetch('/CAN/deleteFloorRoute.jsp?routeId='+id,{method:'POST'});
         location.reload();
     }catch(e){alert('삭제 실패: '+e.message);}
 }

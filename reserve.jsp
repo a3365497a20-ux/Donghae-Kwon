@@ -1,19 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" import="java.sql.*,java.util.*" %>
 <%  String loginUser=(String)session.getAttribute("loginUser"),loginName=(String)session.getAttribute("loginName"),loginRole=(String)session.getAttribute("loginRole");
-    if(loginUser==null){response.sendRedirect("/CampusNav/campuslogin.jsp");return;}
-    if("guest".equals(loginRole)){response.sendRedirect("/CampusNav/main_guest.jsp");return;}
+    if(loginUser==null){response.sendRedirect("/CAN/campuslogin.jsp");return;}
+    if("guest".equals(loginRole)){response.sendRedirect("/CAN/main_guest.jsp");return;}
     // visitor는 main_visitor.jsp에서 자체 예약폼 사용
     String assetNo=request.getParameter("id");if(assetNo==null)assetNo="";
     String success=request.getParameter("success");if(success==null)success="";
     String errMsg=request.getParameter("err");if(errMsg==null)errMsg="";
     if("POST".equals(request.getMethod())){
         String rNo=request.getParameter("resourceId"),rDate=request.getParameter("date"),rStart=request.getParameter("startTime"),rEnd=request.getParameter("endTime"),purpose=request.getParameter("purpose"),phone=request.getParameter("phone");
-        if(rNo!=null&&rDate!=null&&rStart!=null&&rEnd!=null&&!rDate.isEmpty()){
+        if(rNo!=null&&!rNo.isEmpty()&&rDate!=null&&rStart!=null&&rEnd!=null&&!rDate.isEmpty()){
             try{Class.forName("com.mysql.cj.jdbc.Driver");Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/campusnav?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true","root","1234");
             PreparedStatement ps=conn.prepareStatement("SELECT COUNT(*) FROM reservations WHERE asset_no=? AND reserve_date=? AND status='예약완료' AND start_time<? AND end_time>?");ps.setString(1,rNo);ps.setString(2,rDate);ps.setString(3,rEnd);ps.setString(4,rStart);ResultSet rs=ps.executeQuery();boolean dup=rs.next()&&rs.getInt(1)>0;rs.close();ps.close();
-            if(dup){response.sendRedirect("/CampusNav/reserve.jsp?id="+rNo+"&err=이미+예약된+시간입니다");}
-            else{ps=conn.prepareStatement("INSERT INTO reservations(asset_no,user_id,reserve_date,start_time,end_time,purpose,phone,status) VALUES(?,?,?,?,?,?,?,'예약완료')");ps.setString(1,rNo);ps.setString(2,loginUser);ps.setString(3,rDate);ps.setString(4,rStart);ps.setString(5,rEnd);ps.setString(6,purpose!=null?purpose:"");ps.setString(7,phone!=null?phone:"");ps.executeUpdate();ps.close();response.sendRedirect("/CampusNav/reserve.jsp?id="+rNo+"&success=true");}
-            conn.close();}catch(Exception e){response.sendRedirect("/CampusNav/reserve.jsp?id="+assetNo+"&err="+java.net.URLEncoder.encode(e.getMessage(),"UTF-8"));}return;}
+            if(dup){response.sendRedirect("/CAN/reserve.jsp?id="+rNo+"&err=이미+예약된+시간입니다");}
+            else{ps=conn.prepareStatement("INSERT INTO reservations(asset_no,user_id,reserve_date,start_time,end_time,purpose,phone,status) VALUES(?,?,?,?,?,?,?,'예약완료')");ps.setString(1,rNo);ps.setString(2,loginUser);ps.setString(3,rDate);ps.setString(4,rStart);ps.setString(5,rEnd);ps.setString(6,purpose!=null?purpose:"");ps.setString(7,phone!=null?phone:"");ps.executeUpdate();ps.close();response.sendRedirect("/CAN/reserve.jsp?id="+rNo+"&success=true");}
+            conn.close();}catch(Exception e){response.sendRedirect("/CAN/reserve.jsp?id="+assetNo+"&err="+java.net.URLEncoder.encode(e.getMessage(),"UTF-8"));}return;}
     }
     Map<String,String> assetInfo=new LinkedHashMap<>();List<Map<String,String>> existReserves=new ArrayList<>();
     if(!assetNo.isEmpty()){try{Class.forName("com.mysql.cj.jdbc.Driver");Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/campusnav?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true","root","1234");
@@ -23,7 +23,7 @@
 %>
 <!DOCTYPE html><html lang="ko"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ICT CampusNav — 예약</title>
+<title>ICT CAN — 예약</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700;9..40,800&family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -450,19 +450,20 @@ body { font-size: 15px !important; line-height: 1.7 !important; }
 }
 
 </style>
+<link rel="stylesheet" href="/CAN/css/common.css">
 </head><body>
 <div class="topnav">
-  <a href="/CampusNav/main_<%= loginRole %>.jsp" class="logo"><span class="logo-dot"><img src="/CampusNav/images/logo.png" alt="ICT"></span>ICT Campus<em>Nav</em></a>
+  <a href="/CAN/main_<%= loginRole %>.jsp" class="logo"><span class="logo-dot"><img src="/CAN/images/logo.png" alt="ICT"></span>ICT <em>CAN</em></a>
   <div class="nav-right">
     <span style="font-family:var(--mono);font-size:13px;color:var(--txt2)"><i class="bi bi-person-circle me-1"></i><%= loginName %></span>
     <span class="role-chip"><%= "student".equals(loginRole)?"학부생":"assistant".equals(loginRole)?"조교":"professor".equals(loginRole)?"교수":"관리자" %></span>
-    <a href="/CampusNav/main_<%= loginRole %>.jsp" class="chip"><i class="bi bi-house me-1"></i>홈</a>
-    <form action="/CampusNav/logout" method="post" style="margin:0"><button type="submit" class="chip"><i class="bi bi-box-arrow-right me-1"></i>로그아웃</button></form>
+    <a href="/CAN/main_<%= loginRole %>.jsp" class="chip"><i class="bi bi-house me-1"></i>홈</a>
+    <form action="/CAN/logout" method="post" style="margin:0"><button type="submit" class="chip"><i class="bi bi-box-arrow-right me-1"></i>로그아웃</button></form>
   </div>
 </div>
 <div class="shell">
 <div class="hero"><div class="hero-content">
-  <div class="hero-eyebrow">ICT CampusNav · 자원 예약</div>
+  <div class="hero-eyebrow">ICT CAN · 자원 예약</div>
   <div class="hero-title"><% if(!assetInfo.isEmpty()){%><em><%= assetInfo.get("name") %></em> 예약<%}else{%>자원 <em>예약</em><%}%></div>
   <% if(!assetInfo.isEmpty()){%><div class="hero-desc"><i class="bi bi-geo-alt" style="color:var(--teal)"></i> <%= assetInfo.get("loc") %></div><%}%>
 </div><div class="hero-side"><div class="hero-illo">📅</div></div></div>
@@ -474,12 +475,12 @@ body { font-size: 15px !important; line-height: 1.7 !important; }
 <div class="col-lg-7">
 <div class="card"><div class="card-head"><div class="ch-icon si-blue">📝</div><div><div class="ch-title">예약 정보 입력</div></div></div>
 <div class="card-body">
-<form method="post" action="/CampusNav/reserve.jsp" onsubmit="return checkBefore()">
-  <input type="hidden" name="resourceId" value="<%= assetNo %>">
+<form method="post" action="/CAN/reserve.jsp" onsubmit="return checkBefore()">
   <div style="margin-bottom:16px"><label class="f-label">자산번호</label>
     <% if(assetNo.isEmpty()){ %>
-    <input class="f-input" type="text" name="resourceId" value="직접입력">
+    <input class="f-input" type="text" name="resourceId" placeholder="자산번호 입력 (예: 0007C0012)">
     <% }else{ %>
+    <input type="hidden" name="resourceId" value="<%= assetNo %>">
     <input class="f-input" type="text" value="<%= assetNo %>" readonly style="background:var(--bg);color:var(--txt3)">
     <% } %>
   </div>
@@ -528,9 +529,9 @@ function checkBefore(){var el=document.getElementById('timeCheck');if(el&&el.cla
 <!-- ══ SITE FOOTER ══ -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <a href="/CampusNav/campuslogin.jsp" class="footer-logo">
-      <span class="footer-logo-dot"><img src="/CampusNav/images/logo.png" alt="ICT"></span>
-      ICT Campus<em>Nav</em>
+    <a href="/CAN/campuslogin.jsp" class="footer-logo">
+      <span class="footer-logo-dot"><img src="/CAN/images/logo.png" alt="ICT"></span>
+      ICT <em>CAN</em>
     </a>
     <div class="footer-team">
       <strong>Made by AI 소프트웨어학과</strong><br>
@@ -539,7 +540,7 @@ function checkBefore(){var el=document.getElementById('timeCheck');if(el&&el.cla
     <div class="footer-copy">
       ICT폴리텍대학<br>
       교내 자원 내비게이션 시스템<br>
-      Copyright &copy; 2026 ICT CampusNav. All rights reserved.
+      Copyright &copy; 2026 ICT CAN. All rights reserved.
     </div>
   </div>
 </footer>

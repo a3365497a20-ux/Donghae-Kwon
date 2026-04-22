@@ -31,7 +31,7 @@
   - 5가지 역할: 학부생 / 조교 / 교수 / 운영관리자 / 게스트
 
   접속 URL
-  → http://localhost:8080/CampusNav/campuslogin.jsp
+  → http://localhost:8080/CAN/campuslogin.jsp
 
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -152,7 +152,7 @@
           작업관리자 → 서비스 → Tomcat9 → 다시 시작
 
   [5단계] 브라우저 접속
-          http://localhost:8080/CampusNav/campuslogin.jsp
+          http://localhost:8080/CAN/campuslogin.jsp
 
   ─── JSP vs Servlet 수정 시 ──────────────────────────────────
 
@@ -305,7 +305,7 @@ javac -encoding UTF-8 -cp "lib\servlet-api.jar" -d "webapps\CampusNav\WEB-INF\cl
     → 설치 후 실내 위치 실시간 표시 가능
 
   [QR 코드 (앵그로우 앱)]
-    → QR 스캔 → /CampusNav/detail.jsp?id=자산번호 이동
+    → QR 스캔 → /CAN/detail.jsp?id=자산번호 이동
     → 자산별 QR 라벨 생성 필요
 
   [관리자 도착 알림]
@@ -327,9 +327,9 @@ javac -encoding UTF-8 -cp "lib\servlet-api.jar" -d "webapps\CampusNav\WEB-INF\cl
   → 회원가입한 계정은 LoginServlet 재컴파일 전까지 로그인 불가
 
   Q. 404 오류
-  → URL 확인: http://localhost:8080/CampusNav/campuslogin.jsp
+  → URL 확인: http://localhost:8080/CAN/campuslogin.jsp
   → 서블릿(login/logout/guest) 오류 시 재컴파일 후 재시작
-  → forward 경로에 /CampusNav/ 붙어있는지 확인 (없어야 함)
+  → forward 경로에 /CAN/ 붙어있는지 확인 (없어야 함)
 
   Q. DB 연결 오류
   → MySQL 실행 중인지 확인
