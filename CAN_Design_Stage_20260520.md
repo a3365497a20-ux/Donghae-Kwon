@@ -1,3 +1,6 @@
+<!-- VS Code에서 보기: Ctrl+Shift+P → "Markdown Preview: Open Preview to the Side" 권장 -->
+<!-- 다이어그램이 흐릿할 경우: settings.json에서 "[markdown]": { "editor.fontFamily": "Courier New, monospace" } 추가 -->
+
 # CAN 프로젝트 설계 단계 산출물
 
 **Document ID:** CAN_Design_Stage_v1.0_260520  
@@ -5,6 +8,14 @@
 **Stage:** Design Stage  
 **작성일:** 2026-05-20  
 **방법론:** AI소프트웨어 개발방법론 (Samsung SDS Innovator, BDD, ADR)
+
+> **📌 참고:** 아래 다이어그램들이 정렬되지 않으면 VS Code settings.json에 다음을 추가하세요:
+> ```json
+> "[markdown]": {
+>     "editor.fontFamily": "Courier New, 'Courier New', monospace",
+>     "editor.fontSize": 12
+> }
+> ```
 
 ---
 
